@@ -1,0 +1,32 @@
+<ng-container *ngIf="stream$ | withLoading | async as stream">
+  <div *ngIf="stream.err else contentTmp" class="animated fadeIn">
+    <nz-result nzStatus="error"
+               nzTitle="Looks like something went wrong"
+               [nzSubTitle]="stream.err?.message">
+      <div nz-result-extra>
+        <button nz-button nzGhost class="text-primary"
+                (click)="stream$ = getUpdatedStream(stream$)"> Retry
+        </button>
+      </div>
+    </nz-result>
+  </div>
+  <ng-template #contentTmp>
+    <nz-spin [nzSpinning]="stream.isLoading" [nzIndicator]="loadingTmp">
+      <div class="animated fadeIn">
+        <ng-content *ngIf="stream.isLoading || stream.response else noDataTmp"></ng-content>
+        <ng-template #noDataTmp>
+          <nz-result nzStatus="warning"
+                     nzTitle="Looks like response is empty"
+                     nzSubTitle="¯\_(ツ)_/¯">
+          </nz-result>
+        </ng-template>
+      </div>
+    </nz-spin>
+  </ng-template>
+</ng-container>
+
+
+<!--  Add here spinner template whatever you want-->
+<ng-template #loadingTmp>
+  <p class="text-center text-dark mt-5">Loading ...</p>
+</ng-template>

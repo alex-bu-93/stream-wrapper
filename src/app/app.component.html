@@ -1,0 +1,61 @@
+<div class="container pt-4">
+  <h4 class="text-center">Use the buttons below to see various server response strategies</h4>
+  <p class="text-center">You can also repeat the stream inside the wrapper</p>
+  <div class="d-flex mb-2">
+    <div class="mx-auto">
+      <button nz-button nzType="primary" nzSize="small" nzBlock (click)="getUsers()">Get New Set</button>
+      <button nz-button nzType="danger" nzSize="small" nzBlock (click)="getError()">Get Error</button>
+      <button nz-button nzType="danger" nzSize="small" nzBlock (click)="getCustomError()">Get customized Error</button>
+      <button nz-button nzType="default" nzSize="small" nzBlock (click)="getEmpty()">Get Empty Set</button>
+      <button nz-button nzType="default" nzSize="small" nzBlock (click)="getNull()">Get Null</button>
+    </div>
+  </div>
+  <p class="text-center">Initial code on
+    <a href="https://github.com/alex-bu-93/stream-wrapper">github</a>
+  </p>
+
+  <nz-divider></nz-divider>
+
+  <div class="row">
+    <div class="col-md pb-5">
+      <!--Here is stream wrapper-->
+      <h4 class="text-center">Using stream-wrapper</h4>
+      <app-stream-wrapper #response [stream$]="users$">
+        <ng-container [ngTemplateOutlet]="tableTmp" [ngTemplateOutletContext]="{users: response.data}"></ng-container>
+      </app-stream-wrapper>
+    </div>
+    <nz-divider nzType="vertical" style="height: auto"></nz-divider>
+    <div class="col-md pb-5">
+      <!--Classic async-pipe use-->
+      <h4 class="text-center">Without stream-wrapper</h4>
+      <ng-container *ngIf="users$ | async as users else loading">
+        <ng-container [ngTemplateOutlet]="tableTmp" [ngTemplateOutletContext]="{users: users}"></ng-container>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #tableTmp let-users="users">
+  <nz-table #table nzBordered nzSize="small"
+            nzTitle="Table uses data out of wrapper and ngIf+async"
+            nzNoResult="No data to display"
+            nzHideOnSinglePage
+            [nzData]="users">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Age</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of table.data">
+      <td>{{item.name}}</td>
+      <td>{{item.age}}</td>
+    </tr>
+    </tbody>
+  </nz-table>
+</ng-template>
+<ng-template #loading>
+  <p class="text-center text-dark mt-5">Loading ...</p>
+</ng-template>
